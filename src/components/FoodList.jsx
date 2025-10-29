@@ -7,8 +7,8 @@ export default function FoodList({ foods = [], onSelectFood }) {
 
 
     return (
-        <div className="bg-white p-4 rounded-2xl shadow-sm">
-            <div className="flex items-center justify-between mb-3">
+        <section className="card h-[400px] overflow-y-auto">
+            <header className="flex items-center justify-between mb-3">
                 <h3 className="font-semibold">Lista de Alimentos</h3>
                 <input
                     value={q}
@@ -16,10 +16,10 @@ export default function FoodList({ foods = [], onSelectFood }) {
                     placeholder="Pesquisar nome de alimentos"
                     className="text-sm border px-3 py-1 rounded-lg"
                 />
-            </div>
+            </header>
 
 
-            <div className="space-y-3 max-h-72 overflow-auto">
+            <div className="space-y-3">
                 {filtered.map((f) => (
                     <div key={f.id} className="flex items-start gap-3 border-b pb-3 hover:bg-gray-50 p-2 rounded" onClick={() => onSelectFood(f)}>
                         <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">Foto</div>
@@ -39,6 +39,6 @@ export default function FoodList({ foods = [], onSelectFood }) {
 
 
             <div className="mt-4 text-sm text-gray-500">Alimento mais procurado: <span className="font-medium">{foods[0]?.name ?? '—'}</span></div>
-        </div>
+        </section>
     );
 }

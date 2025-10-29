@@ -62,20 +62,21 @@ export default function DietsPage() {
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 p-6">
-            <header className="mb-6 flex items-center justify-between">
+            <header className="flex items-center justify-between mb-6 bg-white rounded-2xl p-4 shadow-soft">
                 <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold">D</div>
+                    <div className="w-10 h-10 bg-primary text-white flex items-center justify-center rounded-xl font-bold">
+                        D
+                    </div>
                     <div>
-                        <div className="text-xl font-bold">Dietas — Mockup</div>
-                        <div className="text-sm text-gray-500">Protótipo funcional com dados mockados</div>
+                        <div className="font-bold text-lg">Sistema de Dietas</div>
+                        <div className="text-sm text-grayText">Controles Simples e Visual</div>
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
-                    <button className="px-3 py-2 rounded-lg">Manual do Usuário</button>
-                    <div className="w-10 h-10 bg-gray-100 rounded-full" />
+                    <button className="btn btn-outline text-sm">Manual do Usuário</button>
+                    <div className="w-10 h-10 bg-gray-200 rounded-full" />
                 </div>
             </header>
-
             <main className="grid grid-cols-1 md:grid-cols-12 gap-6">
                 <div className="md:col-span-3 order-2 md:order-1">
                     <Sidebar
@@ -83,8 +84,7 @@ export default function DietsPage() {
                         onSelect={handleSelect}
                         onEdit={handleEdit}
                         onDelete={handleDelete}
-                        onCreate={handleCreate}
-                    />
+                        onCreate={handleCreate} />
                 </div>
 
                 <div className="md:col-span-6 order-1 md:order-2">
@@ -96,8 +96,7 @@ export default function DietsPage() {
                     <ProfileCard
                         profile={profile}
                         onLogout={() => alert("Logout")}
-                        onSave={() => alert("Salvar")}
-                    />
+                        onSave={() => alert("Salvar")} />
                 </div>
             </main>
         </div>

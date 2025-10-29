@@ -7,15 +7,15 @@ export default function DietEditor({ selectedDiet, onChangeDiet }) {
 
 
     return (
-        <div className="space-y-4">
-            <div className="flex items-center justify-between">
+        <section className="card h-full">
+            <div className="flex items-center justify-between mb-4">
                 <div>
-                    <h2 className="text-2xl font-bold">Dieta Selecionada</h2>
-                    <p className="text-sm text-gray-500">Visualize e edite as refeições da dieta atual.</p>
+                    <h2 className="heading">Dieta Selecionada</h2>
+                    <p className="subheading">Visualize e edite as refeições da dieta atual.</p>
                 </div>
-                <div className="flex items-center gap-3">
-                    <button className="px-3 py-2 rounded-xl border">Alterar Dieta</button>
-                    <button className="px-3 py-2 rounded-xl bg-blue-600 text-white">Dieta Atual</button>
+                <div className="flex gap-3">
+                    <button className="btn btn-outline">Alterar Dieta</button>
+                    <button className="btn btn-primary">Dieta Atual</button>
                 </div>
             </div>
 
@@ -25,6 +25,6 @@ export default function DietEditor({ selectedDiet, onChangeDiet }) {
                     <MealCard key={m} title={m} items={(selectedDiet?.meals?.[m] ?? [])} onAdd={() => onChangeDiet(m)} />
                 ))}
             </div>
-        </div>
+        </section>
     );
 }

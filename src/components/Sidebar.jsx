@@ -5,7 +5,7 @@ export default function Sidebar({ diets = [], onSelect, onEdit, onDelete, onCrea
     return (
         <aside className="bg-white/90 p-4 rounded-2xl shadow-soft h-full overflow-y-auto">
             <h3 className="text-lg font-semibold mb-3">Lista de Dietas Salvas</h3>
-            <div className="space-y-2 max-h-72 overflow-auto">
+            <div className="space-y-2 max-h-[70vh] overflow-y-auto pr-1">
                 {diets.map((d) => (
                     <div
                         key={d.id}
