@@ -1,40 +1,36 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import Sidebar from "../components/Sidebar";
+import DietEditor from "../pages/DietEditor";
+import FoodList from "../components/FoodList";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 flex flex-col items-center justify-center text-center p-6">
-      {/* Cabeçalho simples */}
-      <div className="mb-10">
-        <div className="w-16 h-16 bg-blue-600 text-white flex items-center justify-center rounded-2xl text-3xl font-bold mx-auto">
-          D
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 p-6">
+      <header className="flex items-center justify-between mb-6 bg-white rounded-2xl p-4 shadow-soft">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-primary text-white flex items-center justify-center rounded-xl font-bold">
+            D
+          </div>
+          <div>
+            <div className="font-bold text-lg">Sistema de Dietas</div>
+            <div className="text-sm text-grayText">Controle alimentar prático e visual</div>
+          </div>
         </div>
-        <h1 className="text-3xl font-bold mt-4 text-gray-800">Sistema de Dietas</h1>
-        <p className="text-gray-600 mt-2">
-          Gerencie, crie e visualize suas dietas de forma simples e rápida.
-        </p>
-      </div>
+      </header>
 
-      {/* Botões principais */}
-      <div className="flex flex-col sm:flex-row gap-4">
-        <Link
-          to="/login"
-          className="px-8 py-3 bg-white border rounded-xl shadow hover:bg-gray-50 text-blue-600 font-medium"
-        >
-          Fazer Login
-        </Link>
-        <Link
-          to="/dietas"
-          className="px-8 py-3 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 font-medium"
-        >
-          Acessar Dietas
-        </Link>
-      </div>
+      <main className="grid grid-cols-1 md:grid-cols-12 gap-6">
+        <div className="md:col-span-3">
+          <Sidebar />
+        </div>
 
-      {/* Rodapé */}
-      <footer className="mt-12 text-sm text-gray-500">
-        © {new Date().getFullYear()} Sistema de Dietas — Todos os direitos reservados.
-      </footer>
+        <div className="md:col-span-6">
+          <DietEditor />
+        </div>
+
+        <div className="md:col-span-3">
+          <FoodList />
+        </div>
+      </main>
     </div>
   );
 }

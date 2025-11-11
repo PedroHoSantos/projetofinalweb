@@ -1,37 +1,90 @@
 import React from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useDiet } from "../context/DietContext";
+import { collection, addDoc } from "firebase/firestore";
+import { db, auth } from "../services/firebase"; // 👈 certifique-se do caminho correto
 
+export default function Sidebar({ onSelect }) {
+  const { diets, setDiets, setSelectedDiet, deleteDiet } = useDiet();
+  const nav = useNavigate();
 
-export default function Sidebar({ diets = [], onSelect, onEdit, onDelete, onCreate }) {
-    return (
-        <aside className="bg-white/90 p-4 rounded-2xl shadow-soft h-full overflow-y-auto">
-            <h3 className="text-lg font-semibold mb-3">Lista de Dietas Salvas</h3>
-            <div className="space-y-2 max-h-[70vh] overflow-y-auto pr-1">
-                {diets.map((d) => (
-                    <div
-                        key={d.id}
-                        className="flex items-center justify-between bg-gray-50 p-2 rounded-lg hover:bg-gray-100"
-                    >
-                        <button className="flex items-center gap-3 text-left flex-1" onClick={() => onSelect(d)}>
-                            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-700 font-medium">
-                                {d.name.charAt(0)}
-                            </div>
-                            <div>
-                                <div className="text-sm font-medium">{d.name}</div>
-                                <div className="text-xs text-gray-500">{d.author || 'Criada por você'}</div>
-                            </div>
-                        </button>
+  async function handleCreate() {
+    const name = prompt("Nome da nova dieta:");
+    if (!name) return;
 
+    try {
+      const user = auth.currentUser;
+      if (!user) {
+        alert("É preciso estar logado para criar dietas!");
+        return;
+      }
 
-                        <div className="flex gap-2">
-                            <button onClick={() => onEdit(d)} className="text-xs px-2 py-1 rounded bg-yellow-100">Editar</button>
-                            <button onClick={() => onDelete(d)} className="text-xs px-2 py-1 rounded bg-red-100">Excluir</button>
-                        </div>
-                    </div>
-                ))}
-            </div>
-            <div className="mt-4">
-                <button onClick={onCreate} className="w-full py-2 rounded-xl bg-blue-600 text-white font-medium">Criar nova dieta</button>
-            </div>
-        </aside>
-    );
+      const newDiet = {
+        name,
+        author: user.email || "Usuário",
+        meals: {},
+        createdAt: new Date().toISOString(),
+      };
+
+      // 🔥 Salva no Firestore
+      const ref = collection(db, "users", user.uid, "diets");
+      const docRef = await addDoc(ref, newDiet);
+
+      const created = { id: docRef.id, ...newDiet };
+
+      // ✅ Atualiza contexto global
+      setDiets((prev) => [created, ...prev]);
+      setSelectedDiet(created);
+
+      alert("Dieta criada com sucesso!");
+    } catch (error) {
+      console.error("Erro ao criar dieta:", error);
+      alert("Erro ao salvar dieta. Verifique o console.");
+    }
+  }
+
+  return (
+    <div className="bg-white rounded-2xl p-4 shadow-soft h-full overflow-y-auto">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="font-bold">Minhas Dietas</h3>
+        <button onClick={handleCreate} className="btn btn-primary text-sm">
+          Nova
+        </button>
+      </div>
+
+      <ul className="space-y-2">
+        {diets.length === 0 && (
+          <p className="text-sm text-grayText text-center">Nenhuma dieta criada</p>
+        )}
+
+        {diets.map((d) => (
+          <li key={d.id} className="flex justify-between items-center">
+            <NavLink
+              to={`/editor/${d.id}`}
+              className={({ isActive }) =>
+                `block flex-1 p-3 rounded-lg ${
+                  isActive ? "bg-primary text-white" : "hover:bg-gray-50"
+                }`
+              }
+              onClick={() => onSelect && onSelect(d)}
+            >
+              {d.name}
+            </NavLink>
+            <button
+              onClick={() => deleteDiet(d.id)}
+              className="text-red-500 hover:text-red-700 text-sm ml-2"
+            >
+              ✕
+            </button>
+          </li>
+        ))}
+      </ul>
+
+      <div className="mt-6">
+        <NavLink to="/search" className="btn btn-outline w-full">
+          Buscar alimentos
+        </NavLink>
+      </div>
+    </div>
+  );
 }
