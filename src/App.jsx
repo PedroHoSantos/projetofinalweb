@@ -5,11 +5,11 @@ import { auth } from "./services/firebase";
 
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
-import DietEditor from "./pages/DietEditor";
+import Diets from "./pages/Diets";
+import DietDetail from "./pages/DietDetail";
 import FoodSearch from "./pages/FoodSearch";
 import Profile from "./pages/Profile";
 import { DietProvider } from "./context/DietContext";
-import LoginPage from "./pages/Login";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -35,7 +35,8 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
-            <Route path="editor/:dietId" element={<DietEditor />} />
+            <Route path="diets" element={<Diets />} />
+            <Route path="diets/:dietId" element={<DietDetail />} />
             <Route path="search" element={<FoodSearch />} />
             <Route path="profile" element={<Profile />} />
           </Route>

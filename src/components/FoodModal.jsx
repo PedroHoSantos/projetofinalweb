@@ -4,35 +4,31 @@ import { useDiet } from "../context/DietContext";
 export default function FoodModal({ open, onClose, food }) {
   const { diets, addFoodToDiet } = useDiet();
   const [selectedDiet, setSelectedDiet] = useState("");
-  const [meal, setMeal] = useState("Café da Manhã");
+  const [meal, setMeal] = useState("Almoço");
 
   if (!open || !food) return null;
   const n = food.nutrients || {};
 
   async function handleAdd() {
-    if (!selectedDiet) {
-      alert("Selecione uma dieta!");
-      return;
-    }
+    if (!selectedDiet) return alert("Selecione uma dieta!");
     await addFoodToDiet(selectedDiet, meal, food);
-    alert("Alimento adicionado!");
+    alert("Alimento adicionado com sucesso!");
     onClose();
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4">
+    <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50 p-4">
       <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-lg">
-        <h2 className="text-2xl font-bold mb-2">{food.name}</h2>
-        <p className="text-sm text-grayText mb-4">{food.brand}</p>
+        <h2 className="text-xl font-bold mb-2">{food.name}</h2>
+        <p className="text-grayText mb-4">{food.brand || "Alimento"}</p>
 
         <div className="grid grid-cols-2 gap-3 text-sm mb-4">
-          <div>Calorias: <strong>{n.energia || "-"} kcal</strong></div>
-          <div>Proteínas: <strong>{n.proteina || "-"} g</strong></div>
-          <div>Carboidratos: <strong>{n.carboidratos || "-"} g</strong></div>
-          <div>Gorduras: <strong>{n.gordura || "-"} g</strong></div>
+          <div>Calorias: <strong>{n.energia || 0} kcal</strong></div>
+          <div>Proteínas: <strong>{n.proteina || 0} g</strong></div>
+          <div>Carboidratos: <strong>{n.carboidratos || 0} g</strong></div>
+          <div>Gorduras: <strong>{n.gordura || 0} g</strong></div>
         </div>
 
-        {/* Seleção da dieta e refeição */}
         <div className="space-y-3 mb-4">
           <select
             className="input w-full"
@@ -58,8 +54,12 @@ export default function FoodModal({ open, onClose, food }) {
         </div>
 
         <div className="flex justify-end gap-2">
-          <button className="btn btn-outline" onClick={onClose}>Cancelar</button>
-          <button className="btn btn-primary" onClick={handleAdd}>Adicionar</button>
+          <button className="btn btn-outline" onClick={onClose}>
+            Cancelar
+          </button>
+          <button className="btn btn-primary" onClick={handleAdd}>
+            Adicionar
+          </button>
         </div>
       </div>
     </div>

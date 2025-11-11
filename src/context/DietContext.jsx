@@ -1,76 +1,61 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { db, auth } from "../services/firebase";
 import {
   collection,
-  doc,
-  onSnapshot,
   addDoc,
-  updateDoc,
   deleteDoc,
+  doc,
   getDocs,
+  updateDoc,
 } from "firebase/firestore";
+import { db, auth } from "../services/firebase";
 
 const DietContext = createContext();
 export const useDiet = () => useContext(DietContext);
 
 export function DietProvider({ children }) {
   const [diets, setDiets] = useState([]);
-  const [selectedDiet, setSelectedDiet] = useState(null);
+  const [loading, setLoading] = useState(true);
 
+  // 🔹 Carrega dietas do Firestore
   useEffect(() => {
     const user = auth.currentUser;
     if (!user) return;
 
-    const ref = collection(db, "users", user.uid, "diets");
-
-    // 🔁 Observa mudanças em tempo real
-    const unsub = onSnapshot(ref, (snapshot) => {
-      const list = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
-      setDiets(list);
-    });
-
-    return () => unsub();
+    const fetchDiets = async () => {
+      const snapshot = await getDocs(collection(db, "users", user.uid, "diets"));
+      const data = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
+      setDiets(data);
+      setLoading(false);
+    };
+    fetchDiets();
   }, []);
 
-  async function addFoodToDiet(dietId, mealName, food) {
+  // 🔹 Adiciona alimento à dieta
+  async function addFoodToDiet(dietId, meal, food) {
     const user = auth.currentUser;
-    if (!user) return alert("Faça login para continuar.");
+    if (!user) throw new Error("Usuário não autenticado");
 
-    try {
-      const dietRef = doc(db, "users", user.uid, "diets", dietId);
-      const mealsRef = collection(dietRef, "meals", mealName, "foods");
+    const dietRef = doc(db, "users", user.uid, "diets", dietId);
+    const diet = diets.find((d) => d.id === dietId);
+    if (!diet) return;
 
-      await addDoc(mealsRef, food);
-      console.log("✅ Alimento adicionado:", food);
-    } catch (err) {
-      console.error("Erro ao adicionar alimento:", err);
-    }
-  }
+    const meals = { ...diet.meals };
+    if (!meals[meal]) meals[meal] = [];
+    meals[meal].push(food);
 
-  async function fetchDietMeals(dietId) {
-    const user = auth.currentUser;
-    if (!user) return [];
-
-    const meals = {};
-    const mealNames = ["Café da Manhã", "Almoço", "Jantar", "Lanche"];
-
-    for (const mealName of mealNames) {
-      const ref = collection(db, "users", user.uid, "diets", dietId, "meals", mealName, "foods");
-      const snapshot = await getDocs(ref);
-      meals[mealName] = snapshot.docs.map((d) => d.data());
-    }
-
-    return meals;
+    await updateDoc(dietRef, { meals });
+    setDiets((prev) =>
+      prev.map((d) => (d.id === dietId ? { ...d, meals } : d))
+    );
   }
 
   return (
     <DietContext.Provider
       value={{
         diets,
-        selectedDiet,
-        setSelectedDiet,
+        setDiets,
+        loading,
         addFoodToDiet,
-        fetchDietMeals,
       }}
     >
       {children}

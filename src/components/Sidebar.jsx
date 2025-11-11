@@ -44,46 +44,38 @@ export default function Sidebar({ onSelect }) {
   }
 
   return (
-    <div className="bg-white rounded-2xl p-4 shadow-soft h-full overflow-y-auto">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="font-bold">Minhas Dietas</h3>
-        <button onClick={handleCreate} className="btn btn-primary text-sm">
-          Nova
-        </button>
-      </div>
+    <div className="flex flex-col h-full">
+      <h3 className="font-bold text-lg mb-4">Minhas Dietas</h3>
 
-      <ul className="space-y-2">
-        {diets.length === 0 && (
-          <p className="text-sm text-grayText text-center">Nenhuma dieta criada</p>
-        )}
-
+      <ul className="flex-1 space-y-2">
         {diets.map((d) => (
-          <li key={d.id} className="flex justify-between items-center">
+          <li key={d.id}>
             <NavLink
-              to={`/editor/${d.id}`}
+              to={`/diets/${d.id}`}
               className={({ isActive }) =>
-                `block flex-1 p-3 rounded-lg ${
-                  isActive ? "bg-primary text-white" : "hover:bg-gray-50"
+                `block p-3 rounded-lg ${isActive ? "bg-primary text-white" : "hover:bg-gray-100"
                 }`
               }
-              onClick={() => onSelect && onSelect(d)}
             >
               {d.name}
             </NavLink>
-            <button
-              onClick={() => deleteDiet(d.id)}
-              className="text-red-500 hover:text-red-700 text-sm ml-2"
-            >
-              ✕
-            </button>
           </li>
         ))}
       </ul>
 
-      <div className="mt-6">
-        <NavLink to="/search" className="btn btn-outline w-full">
+      <div className="mt-auto space-y-2">
+        <button
+          onClick={() => nav("/search")}
+          className="btn btn-outline w-full text-sm"
+        >
           Buscar alimentos
-        </NavLink>
+        </button>
+        <button
+          onClick={() => nav("/profile")}
+          className="btn btn-primary w-full text-sm"
+        >
+          Perfil
+        </button>
       </div>
     </div>
   );
