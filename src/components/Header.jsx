@@ -1,37 +1,36 @@
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { signOut } from "firebase/auth";
 import { auth } from "../services/firebase";
 
 export default function Header({ user }) {
   const navigate = useNavigate();
 
-  function handleLogout() {
-    auth.signOut().then(() => navigate("/"));
+  async function handleLogout() {
+    try {
+      await signOut(auth);
+      navigate("/"); // redireciona para login
+    } catch (err) {
+      console.error("Erro ao sair:", err);
+      alert("Erro ao sair. Tente novamente.");
+    }
   }
 
   return (
-    <header className="flex items-center justify-between bg-white shadow-soft rounded-2xl p-4 mb-6">
-      {/* Logo / Home */}
-      <div
+    <header className="bg-white shadow-md px-6 py-3 flex justify-between items-center sticky top-0 z-50">
+      <h1
+        className="text-xl font-bold text-primary cursor-pointer"
         onClick={() => navigate("/")}
-        className="flex items-center gap-3 cursor-pointer hover:opacity-80"
       >
-        <div className="w-10 h-10 bg-primary text-white flex items-center justify-center rounded-xl font-bold">
-          D
-        </div>
-        <div>
-          <h1 className="text-lg font-bold">DietApp</h1>
-          <p className="text-sm text-grayText">Gerencie suas dietas</p>
-        </div>
-      </div>
+        🍎 Minha Dieta
+      </h1>
 
-      {/* Navegação */}
-      <nav className="flex items-center gap-4">
+      <nav className="flex gap-6 items-center">
         <NavLink
           to="/"
           className={({ isActive }) =>
-            `text-sm font-medium px-3 py-2 rounded-lg ${
-              isActive ? "bg-primary text-white" : "hover:bg-gray-100"
+            `text-sm font-medium ${
+              isActive ? "text-primary" : "text-gray-600 hover:text-black"
             }`
           }
         >
@@ -39,26 +38,33 @@ export default function Header({ user }) {
         </NavLink>
 
         <NavLink
+          to="/search"
+          className={({ isActive }) =>
+            `text-sm font-medium ${
+              isActive ? "text-primary" : "text-gray-600 hover:text-black"
+            }`
+          }
+        >
+          Buscar
+        </NavLink>
+
+        <NavLink
           to="/profile"
           className={({ isActive }) =>
-            `text-sm font-medium px-3 py-2 rounded-lg ${
-              isActive ? "bg-primary text-white" : "hover:bg-gray-100"
+            `text-sm font-medium ${
+              isActive ? "text-primary" : "text-gray-600 hover:text-black"
             }`
           }
         >
           Perfil
         </NavLink>
 
-        {/* Usuário logado */}
-        <div className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-xl">
-          <span className="text-sm text-grayText">{user?.email}</span>
-          <button
-            onClick={handleLogout}
-            className="text-red-500 text-sm font-semibold hover:text-red-700"
-          >
-            Sair
-          </button>
-        </div>
+        <button
+          onClick={handleLogout}
+          className="text-sm text-red-600 hover:text-red-800 font-medium"
+        >
+          Sair
+        </button>
       </nav>
     </header>
   );

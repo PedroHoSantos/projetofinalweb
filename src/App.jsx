@@ -10,6 +10,7 @@ import DietDetail from "./pages/DietDetail";
 import FoodSearch from "./pages/FoodSearch";
 import Profile from "./pages/Profile";
 import { DietProvider } from "./context/DietContext";
+import LoginPage from "./pages/Login"
 
 export default function App() {
   const [user, setUser] = useState(null);
