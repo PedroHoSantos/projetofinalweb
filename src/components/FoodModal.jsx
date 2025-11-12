@@ -5,11 +5,12 @@ export default function FoodModal({ open, onClose, food }) {
   const { diets, addFoodToDiet } = useDiet();
   const [selectedDiet, setSelectedDiet] = useState("");
   const [meal, setMeal] = useState("Almoço");
-  const [portion, setPortion] = useState(100);
+  const [portion, setPortion] = useState(100); // por padrão, 100 g
 
+ 
   const n = food?.nutrients || {};
 
-  // ✅ useMemo sempre é chamado — mesmo se food for null
+  // Calcula nutrientes dinamicamente conforme a porção
   const scaled = useMemo(() => {
     const factor = portion / 100;
     return {
@@ -20,7 +21,6 @@ export default function FoodModal({ open, onClose, food }) {
     };
   }, [portion, n]);
 
-  // 🔒 só interrompe o render **depois dos hooks**
   if (!open || !food) return null;
 
   async function handleAdd() {
@@ -39,17 +39,19 @@ export default function FoodModal({ open, onClose, food }) {
   return (
     <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4">
       <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl relative">
+        {/* Imagem do alimento */}
         <div className="w-full h-40 flex items-center justify-center mb-4 overflow-hidden rounded-xl bg-gray-100">
           <img
             src={food.image || "https://via.placeholder.com/200x200?text=Sem+Imagem"}
             alt={food.name}
-            className="object-cover w-full h-full"
+            className="object-cover w-max h-full"
           />
         </div>
 
         <h2 className="text-2xl font-bold mb-1">{food.name}</h2>
         <p className="text-grayText mb-3 text-sm">{food.brand || "Alimento genérico"}</p>
 
+        {/* Quantidade / Porção */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Quantidade (g)
@@ -63,6 +65,7 @@ export default function FoodModal({ open, onClose, food }) {
           />
         </div>
 
+        {/* Nutrientes calculados */}
         <div className="grid grid-cols-2 gap-3 text-sm mb-4">
           <div>Calorias: <strong>{scaled.energia.toFixed(0)} kcal</strong></div>
           <div>Proteínas: <strong>{scaled.proteina.toFixed(1)} g</strong></div>
@@ -70,6 +73,7 @@ export default function FoodModal({ open, onClose, food }) {
           <div>Gorduras: <strong>{scaled.gordura.toFixed(1)} g</strong></div>
         </div>
 
+        {/* Seleção da dieta e refeição */}
         <div className="space-y-3 mb-4">
           <select
             className="input w-full"
@@ -96,6 +100,7 @@ export default function FoodModal({ open, onClose, food }) {
           </select>
         </div>
 
+        {/* Botões */}
         <div className="flex justify-end gap-2">
           <button className="btn btn-outline" onClick={onClose}>
             Cancelar

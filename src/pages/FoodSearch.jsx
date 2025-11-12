@@ -46,6 +46,11 @@ export default function FoodSearch() {
             onClick={() => setSelectedFood(f)}
             className="border rounded-xl p-3 cursor-pointer hover:bg-gray-50 transition"
           >
+            <img
+              src={f.image || "https://via.placeholder.com/80?text=Sem+Imagem"}
+              alt={f.name}
+              className="w-16 h-16 object-cover rounded-lg"
+            />
             <div className="font-medium">{f.name}</div>
             <div className="text-sm text-grayText">
               {f.nutrients.energia} kcal —{" "}
