@@ -15,6 +15,7 @@ export const useDiet = () => useContext(DietContext);
 export function DietProvider({ children }) {
   const [diets, setDiets] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedDiet, setSelectedDiet] = useState(null);
 
   // 🔹 Carrega dietas do Firestore
   useEffect(() => {
@@ -48,6 +49,13 @@ export function DietProvider({ children }) {
       prev.map((d) => (d.id === dietId ? { ...d, meals } : d))
     );
   }
+  function deleteDiet(dietId) {
+    setDiets((prevDiets) => prevDiets.filter((diet) => diet.id !== dietId));
+    // Se a dieta apagada era a que estava selecionada, limpa a seleção
+    if (selectedDiet?.id === dietId) {
+        setSelectedDiet(null);
+    }
+  }
 
   return (
     <DietContext.Provider
@@ -56,6 +64,9 @@ export function DietProvider({ children }) {
         setDiets,
         loading,
         addFoodToDiet,
+        selectedDiet,      
+        setSelectedDiet,
+        deleteDiet,
       }}
     >
       {children}
